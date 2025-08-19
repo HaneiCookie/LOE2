@@ -24,11 +24,11 @@ codeTypeString_MAGNETIC = "MAG"
 email = "araka0279@naver.com"
 password = "znznfna19"
 
-light_top_01= "98:ba:5f:da:f8:23" # 6
-light_mid_01= "98:03:8e:9c:c4:c8" # 174
-light_bot_01= "98:03:8e:9c:c6:be" # 103
+light_top_01= "192.168.219.170" #"98:ba:5f:da:f8:23" # 
+light_mid_01= "192.168.219.171" #"98:03:8e:9c:c4:c8" # 
+light_bot_01= "192.168.219.171" #"98:03:8e:9c:c6:be" # 
 
-remote_magnetic_01 = "24:d7:eb:ef:ad:63"
+remote_magnetic_01 = "192.168.219.153" #"24:d7:eb:ef:ad:63" # 192.168.219.153
 
 # DB
 dataPath = "LOE2.db"
@@ -103,7 +103,7 @@ common_font = '경기천년바탕OTF Regular'
 plusLayer = 36
 intro_png = 'IntroBg.png'
 gameView_png = 'LOEBg.png'
-LOELaserPortFilePath = 'LOELaserPort.txt'
+LOEBaronPortFilePath = 'LOEBaronPort.txt'
 
 helpCall = '직원호출'
 endCall = '테마종료'

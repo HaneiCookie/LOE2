@@ -44,8 +44,8 @@ class LOEIntroView(tk.Frame):
         self.botLightStatus = tk.Label(self,text='bot wait',font=(mAppDefine.common_font,20))
         self.botLightStatus.place(x=50, y=600)
 
-        self.laserStatus = tk.Label(self,text='laser wait',font=(mAppDefine.common_font,20))
-        self.laserStatus.place(x=50, y=700)
+        self.baronStatus = tk.Label(self,text='baron wait',font=(mAppDefine.common_font,20))
+        self.baronStatus.place(x=50, y=700)
 
         self.magneticStatus = tk.Label(self,text='magnetic wait',font=(mAppDefine.common_font,20))
         self.magneticStatus.place(x=50, y=800)
@@ -71,8 +71,8 @@ class LOEIntroView(tk.Frame):
         self.readyButton.place(relx = mAppDefine.nextButton_rel_x, rely = mAppDefine.nextButton_rel_y-0.2)
 
     def onClickReadyBtn(self):
-        #self.init_light_device()
-        #self.init_serial_port()
+        self.init_light_device()
+        self.init_serial_port()
 
         self.init_server()
         self.server_socket.listen(1)
@@ -81,11 +81,8 @@ class LOEIntroView(tk.Frame):
         print('h1')
         self.server_handler.start()
 
-
-        self.init_remote_port()
-
-        #self.ser_handler = threading.Thread(target=self.StartSerial)
-        #self.ser_handler.start()
+        self.ser_handler = threading.Thread(target=self.StartSerial)
+        self.ser_handler.start()
 
     def HandleServer(self):
         print('s0')
@@ -129,7 +126,7 @@ class LOEIntroView(tk.Frame):
             self.show_debug_text(self.magneticStatus,msg)  
 
     def init_server(self):
-        self.host = '192.168.35.195'
+        self.host = '192.168.219.200'
         self.port = mAppDefine.portNumber
 
         self.server_socket= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -143,8 +140,8 @@ class LOEIntroView(tk.Frame):
         while(True):
             if(self.ser1.in_waiting > 0):
                 arduino_data = self.ser1.readline().decode('utf-8').rstrip()
-                print('laser data : ', arduino_data)
-                self.show_debug_text(self.laserStatus,arduino_data)
+                print('baron data : ', arduino_data)
+                self.show_debug_text(self.baronStatus,arduino_data)
                 self.processInput(arduino_data)
 
     def processInput(self,inputData):
@@ -152,7 +149,7 @@ class LOEIntroView(tk.Frame):
 
 
     def init_serial_port(self):
-        self.file_path1 = mAppDefine.root_path + mAppDefine.LOELaserPortFilePath  # 실제 파일 경로에 따라 변경
+        self.file_path1 = mAppDefine.root_path + mAppDefine.LOEBaronPortFilePath  # 실제 파일 경로에 따라 변경
         with open(self.file_path1, 'r') as file:
             content = file.read()
         print(content)
@@ -164,8 +161,7 @@ class LOEIntroView(tk.Frame):
         self.ser1 = serial.Serial(self.arduino_port, self.baud_rate)
         time.sleep(2)
 
-        self.show_debug_text(self.laserStatus,'laser sync')
-        #self.laserStatus.config(text='laser sync')
+        self.show_debug_text(self.baronStatus,'baron sync')        
 
     def show_debug_text(self,target,text):
         now = datetime.now()
@@ -173,19 +169,19 @@ class LOEIntroView(tk.Frame):
         target.config(text=time_str+" "+text)
 
     def init_light_device(self):
-        ip1 = self.find_device(mAppDefine.light_top_01)
-        print("ip1 : ", ip1)
-        self.device_01 = mLightDevice.Device("TOP_01",ip1)
+        #ip1 = self.find_device(mAppDefine.light_top_01)
+        print("ip1 : ", mAppDefine.light_top_01)
+        self.device_01 = mLightDevice.Device("TOP_01",mAppDefine.light_top_01)
         self.show_debug_text(self.topLightStatus,self.device_01.connect())
 
-        ip2 = self.find_device(mAppDefine.light_mid_01)       
-        print("ip2 : ", ip2)
-        self.device_02 = mLightDevice.Device("MID_01",ip2)
+        #ip2 = self.find_device(mAppDefine.light_mid_01)       
+        print("ip2 : ", mAppDefine.light_mid_01)
+        self.device_02 = mLightDevice.Device("MID_01",mAppDefine.light_mid_01)
         self.show_debug_text(self.midLightStatus,self.device_02.connect())
 
-        ip3 = self.find_device(mAppDefine.light_bot_01)       
-        print("ip3 : ", ip3)
-        self.device_03 = mLightDevice.Device("BOT_01",ip3)
+        #ip3 = self.find_device(mAppDefine.light_bot_01)       
+        print("ip3 : ", mAppDefine.light_bot_01)
+        self.device_03 = mLightDevice.Device("BOT_01",mAppDefine.light_bot_01)
         self.show_debug_text(self.botLightStatus,self.device_03.connect())
         
 
