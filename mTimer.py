@@ -22,10 +22,10 @@ class Timer(tk.Frame):
         #print("mtimer")
         #print(mAppDefine.timeLimitMin)
         self.remainTime = self.startTime # sec
-        self.label_clock = tk.Label(self, text = '{0:02d}'.format(self.startTime//(mAppDefine.MIN_TO_SEC)) + ":" + '{0:02d}'.format(self.startTime%(mAppDefine.MIN_TO_SEC)), font = (mAppDefine.common_font,100),fg="white",bg=mAppDefine.timerColor)
+        self.label_clock = tk.Label(self, text = '{0:02d}'.format(self.startTime//(mAppDefine.MIN_TO_SEC)) + ":" + '{0:02d}'.format(self.startTime%(mAppDefine.MIN_TO_SEC)), font = (mAppDefine.common_font,50),fg="white",bg=mAppDefine.helpButtonColor)
         self.label_clock.pack()
-        self.progress_bar = ttk.Progressbar(self, orient = "horizontal", maximum=100, length = 500, mode = "determinate", variable=self.remainTime)
-        self.progress_bar.pack(pady=10)
+        #self.progress_bar = ttk.Progressbar(self, orient = "horizontal", maximum=100, length = 500, mode = "determinate", variable=self.remainTime)
+        #self.progress_bar.pack(pady=10)
 
     def update_timer(self):
         #print("timer update_timer")
@@ -33,7 +33,7 @@ class Timer(tk.Frame):
         if(mAppDefine.timerFlag == True and self.remainTime > 0):
             self.remainTime -= mAppDefine.ONE_SEC
             self.label_clock.config(text = '{0:02d}'.format(self.remainTime//mAppDefine.MIN_TO_SEC) + ":" + '{0:02d}'.format(self.remainTime%mAppDefine.MIN_TO_SEC)) 
-            self.update_progressbar()
+            #self.update_progressbar()
         self.label_clock.after(mAppDefine.ONE_MIL_SEC,self.update_timer)
 
         if(self.remainTime == 0):

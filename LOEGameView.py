@@ -34,63 +34,46 @@ class LOEGameView(tk.Frame):
 
         self.upperView = parent
 
+        self.Init_BGM()
+        self.Init_QUIZ()
+
+        self.exitCount = 0
+        self.endFlag = False
+        self.currentQuizIndex = 0
+
         image_path = mAppDefine.root_path + mAppDefine.gameView_png    
         self.image = Image.open(image_path)
         self.photo = ImageTk.PhotoImage(self.image)
         self.canvas = tk.Canvas(self, width=self.image.width, height=self.image.height)
         #self.canvas.pack(fill="both", expand=True)
         self.canvas.place(x=0,y=0)
-        self.prevImage = self.canvas.create_image(0, 0, anchor=tk.NW, image=self.photo)
-
-        ## timer
-        self.remainTimer = mTimer.Timer(self)
-        self.remainTimer.pack(pady=10)
-
-        # guideText
-        self.guideTextFrame = tk.Frame(self, width=mAppDefine.guideTextWidth, height=mAppDefine.guideTextHeight, bg="red")
-        self.guideTextFrame.place(x=mAppDefine.guideTextFrameX,y=mAppDefine.guideTextFrameY)
-
-        cropImage = self.image.crop((mAppDefine.guideTextFrameX,mAppDefine.guideTextFrameY,mAppDefine.guideTextFrameX+mAppDefine.guideTextWidth,mAppDefine.guideTextFrameY+mAppDefine.guideTextHeight))
-        enhancer = ImageEnhance.Brightness(cropImage)
-        self.cropped_image = enhancer.enhance(mAppDefine.guideTextBright)
-        self.guideTextPhoto = ImageTk.PhotoImage(self.cropped_image)
-        self.guideTextCanvas = tk.Canvas(self.guideTextFrame, width=mAppDefine.guideTextWidth, height=mAppDefine.guideTextHeight, borderwidth=0, highlightthickness=0)
-        self.guideTextCanvas.create_image(0,0,anchor=tk.NW, image=self.guideTextPhoto)
-        
-        wrapped_text = textwrap.fill(mAppDefine.guideTextDefault, width=20)
-        self.current_guide_text = self.guideTextCanvas.create_text(mAppDefine.guideTextX,mAppDefine.guideTextY, anchor=tk.NW, text=wrapped_text, font=(mAppDefine.common_font,25), fill="white")
-        self.guideTextCanvas.place(x=0,y=0)
-
-        ## helpLifeFrame
-        self.helpLifeFrame = tk.Frame(self)
-        self.helpLifeFrame.pack(pady=10)
-
-        self.helpButton = tk.Button(self.helpLifeFrame, text=mAppDefine.helpCall, font = (mAppDefine.common_font,20), width = 10, height = 2, command=lambda: self.open_help_popup(), fg="white",bg=mAppDefine.helpButtonColor)
-        self.helpButton.pack(side=tk.LEFT)
-
-        self.hintCountButton = tk.Button(self.helpLifeFrame,text=str(self.hintCount), font=(mAppDefine.common_font,20), width=5, height=2, command=lambda:self.open_guide_token_popup(), fg="white", bg=mAppDefine.helpButtonColor, activebackground="white", activeforeground="red")
-        self.hintCountButton.pack(side=tk.LEFT)
-        
-        self.exitCount = 0
-
-        self.Init_BGM()
-        self.Init_QUIZ()
-
-        ## quizFrame
-        #self.quizFrame = tk.Frame(self)
-        #self.quizFrame.pack(pady=10)
-
-        self.currentQuizIndex = 0
+        self.prevImage = self.canvas.create_image(0, 0, anchor=tk.NW, image=self.photo)        
 
         quizImagePath = mAppDefine.root_path + self.quizImageArray[self.currentQuizIndex]
         self.quizImage = Image.open(quizImagePath)
-        self.quizPhoto = ImageTk.PhotoImage(self.quizImage)
-        self.quizCanvas = tk.Canvas(self, width=self.quizImage.width, height=self.quizImage.height, highlightthickness=0, bd=0)
-        self.quizCanvas.pack()
+        self.resizedQuizImage = self.quizImage.resize((1920, 1080), Image.LANCZOS)
+        self.quizPhoto = ImageTk.PhotoImage(self.resizedQuizImage)
+        self.quizCanvas = tk.Canvas(self, width=self.resizedQuizImage.width, height=self.resizedQuizImage.height, highlightthickness=0, bd=0)
+        self.quizCanvas.place(x=0,y=0)
         self.quizCanvas.photoRef = self.quizPhoto
         self.prevQuizImage = self.quizCanvas.create_image(0, 0, anchor=tk.NW, image=self.quizPhoto)
 
-        self.endFlag = False
+        ## timer
+        self.remainTimer = mTimer.Timer(self)
+        self.remainTimer.place(x=25,y=980)
+
+        ## helpLifeFrame
+        self.helpLifeFrame = tk.Frame(self)
+        self.helpLifeFrame.place(x=200,y=980)
+
+        #self.helpButton = tk.Button(self.helpLifeFrame, text=mAppDefine.helpCall, font = (mAppDefine.common_font,20), width = 10, height = 2, command=lambda: self.open_help_popup(), fg="white",bg=mAppDefine.helpButtonColor)
+        #self.helpButton.pack(side=tk.LEFT)
+
+        self.hintCountButton = tk.Button(self.helpLifeFrame,text=str(self.hintCount), font=(mAppDefine.common_font,20), width=5, height=2, command=lambda:self.hint_button_popup(), fg="white", bg=mAppDefine.helpButtonColor, activebackground="white", activeforeground="red")
+        self.hintCountButton.pack(side=tk.LEFT)
+        
+    def hint_button_popup(self):
+        return
 
     def OnUpdate(self):
         print('gameView onUdpate')
