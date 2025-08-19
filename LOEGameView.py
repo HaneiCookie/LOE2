@@ -23,8 +23,11 @@ class LOEGameView(tk.Frame):
 
     quizImageArray = []
     quizAnswerArray = []
-    quizHintArray = []
+    quizHintImageArray = []
     quizGuideArray = []
+    movingImageArray = []
+    doubleLeftImageArray = []
+    doubleRightImageArray = []
 
     quizCount = 0
     hintCount = 0
@@ -66,11 +69,129 @@ class LOEGameView(tk.Frame):
         self.helpLifeFrame = tk.Frame(self)
         self.helpLifeFrame.place(x=200,y=980)
 
-        #self.helpButton = tk.Button(self.helpLifeFrame, text=mAppDefine.helpCall, font = (mAppDefine.common_font,20), width = 10, height = 2, command=lambda: self.open_help_popup(), fg="white",bg=mAppDefine.helpButtonColor)
-        #self.helpButton.pack(side=tk.LEFT)
-
         self.hintCountButton = tk.Button(self.helpLifeFrame,text=str(self.hintCount), font=(mAppDefine.common_font,20), width=5, height=2, command=lambda:self.hint_button_popup(), fg="white", bg=mAppDefine.helpButtonColor, activebackground="white", activeforeground="red")
         self.hintCountButton.pack(side=tk.LEFT)
+
+        self.entry = tk.Entry(self,width = 10, font = (mAppDefine.common_font,53))
+        self.entry.bind("<Return>", self.onEnterCardInput)
+        self.entry.place(x=800,y=980)
+
+        self.left_split_end_check = False
+        self.right_split_end_check = False
+
+    def onEnterCardInput(self,event):
+        inputText = self.entry.get().upper()
+
+        print(self.currentQuizIndex)
+        print(inputText)
+
+        if(self.currentQuizIndex == 34):
+            if(inputText == "JAYA"):
+                self.show_left_quiz(1)
+            elif(inputText == "RAKAN"):
+                self.show_right_quiz(1)
+            elif(inputText == "이쉬탈"):
+                self.show_left_quiz(2)
+            elif(inputText == "블롱코"):
+                self.show_right_quiz(2)
+            elif(inputText == "0122"):
+                self.show_left_quiz(3)
+                self.left_split_end_check = True
+            elif(inputText == "너무보고시퍼"):
+                self.show_right_quiz(3)
+                self.right_split_end_check = True
+
+        if(self.left_split_end_check == True and self.right_split_end_check == True):
+            self.currentQuizIndex = 37
+            self.left_split_end_check = False
+            self.right_split_end_check = False
+
+        #skip test
+        if(inputText == "TT"):
+            self.currentQuizIndex = 34
+            self.show_next_quiz()   
+
+        if(inputText == "직원호출"):
+            self.sendHelpSignalOffice()
+        elif(inputText == "힌트다힌트"):
+            self.show_hint_content()
+        elif(self.check_answer(inputText) == True):    
+            self.currentQuizIndex += 1        
+            self.show_next_quiz()
+        else:
+            print("no answer")
+
+        self.entry.delete(0,tk.END)
+
+    def show_hint_content(self):
+        newImagePath = mAppDefine.root_path + self.quizHintImageArray[self.currentQuizIndex]
+        newImage = Image.open(newImagePath).resize((1920, 1080), Image.LANCZOS)
+        newPhoto = ImageTk.PhotoImage(newImage)
+        self.quizCanvas.itemconfig(self.prevQuizImage, image=newPhoto)
+        self.quizCanvas.photoRef = newPhoto
+
+    def check_answer(self,_inputText):
+        if(self.quizAnswerArray[self.currentQuizIndex].upper() == _inputText):
+            return True
+        else:
+            return False        
+        
+    def show_next_quiz(self):       
+        newImagePath = mAppDefine.root_path + self.quizImageArray[self.currentQuizIndex]
+        newImage = Image.open(newImagePath).resize((1920, 1080), Image.LANCZOS)
+        newPhoto = ImageTk.PhotoImage(newImage)
+        self.quizCanvas.itemconfig(self.prevQuizImage, image=newPhoto)
+        self.quizCanvas.photoRef = newPhoto
+
+        if(self.currentQuizIndex >= 25 and self.currentQuizIndex <= 30):
+            self.show_moving_quiz()
+        elif(self.currentQuizIndex == 34):
+            self.show_left_quiz(self.currentQuizIndex-34)
+            self.show_right_quiz(self.currentQuizIndex-34)
+        elif(self.currentQuizIndex >= 37 and self.currentQuizIndex <= 41):
+            self.show_left_quiz(self.currentQuizIndex-34)
+            self.show_right_quiz(self.currentQuizIndex-34)
+    
+    def move_image(self):
+        self.movingImage_x -= 2
+        self.quizCanvas.coords(self.movingImage,self.movingImage_x,self.movingImage_y)
+        if(self.movingImage_x <= -2880):
+            self.movingImage_x = -2880
+            self.move_time_count += 1
+            print(self.movingImage_x)
+            print(self.move_time_count)
+            if(self.move_time_count >= mAppDefine.ONE_SEC*5):
+                self.move_time_count = 0
+                self.movingImage_x = 0
+
+        self.after(mAppDefine.MIL_SEC_10,lambda:self.move_image()) 
+
+    def show_moving_quiz(self):
+        newImagePath = mAppDefine.root_path + self.movingImageArray[self.currentQuizIndex-25]
+        newImage = Image.open(newImagePath).resize((5040, 1080), Image.LANCZOS)
+        newPhoto = ImageTk.PhotoImage(newImage)
+        self.movingImage_x = 0
+        self.movingImage_y = 0
+        self.movingImage = self.quizCanvas.create_image(self.movingImage_x,self.movingImage_y,anchor=tk.NW,image=newPhoto)
+        #self.quizCanvas.itemconfig(self.prevQuizImage, image=newPhoto)
+        self.quizCanvas.photoRef = newPhoto
+
+        self.move_time_count = 0
+        self.move_image()
+    
+    def show_left_quiz(self,index):
+        newImagePath = mAppDefine.root_path + self.doubleLeftImageArray[index]
+        newImage = Image.open(newImagePath).resize((960, 1080), Image.LANCZOS)
+        newPhoto = ImageTk.PhotoImage(newImage)
+        self.leftImage = self.quizCanvas.create_image(0,0,anchor=tk.NW,image=newPhoto)
+        self.quizCanvas.leftRef = newPhoto
+
+    def show_right_quiz(self,index):
+        newImagePath = mAppDefine.root_path + self.doubleRightImageArray[index]
+        newImage = Image.open(newImagePath).resize((960, 1080), Image.LANCZOS)
+        newPhoto = ImageTk.PhotoImage(newImage)
+        self.leftImage = self.quizCanvas.create_image(960,0,anchor=tk.NW,image=newPhoto)
+        self.quizCanvas.rightRef = newPhoto
         
     def hint_button_popup(self):
         return
@@ -96,10 +217,15 @@ class LOEGameView(tk.Frame):
         for i in range(0,self.quizCount):
             self.quizImageArray.append(self.quizDataRaws[i][1])
             self.quizAnswerArray.append(self.quizDataRaws[i][2])
-            self.quizHintArray.append(self.quizDataRaws[i][3])      
+            self.quizHintImageArray.append(self.quizDataRaws[i][3])      
             self.quizGuideArray.append(self.quizDataRaws[i][4])
 
-        print(self.quizImageArray)        
+        for j in range(0,7):
+            self.movingImageArray.append("LOE_MID_MOIVE_IMAGE.0" + f"{j+1:02}" + ".png")
+
+        for k in range(0,8):
+            self.doubleLeftImageArray.append("LOE_Quiz_BOT.0" + f"{2*(k+1)-1:02}" + ".png")
+            self.doubleRightImageArray.append("LOE_Quiz_BOT.0" + f"{2*(k+1):02}" + ".png")    
      
     def SetHint(self,_hintText):
         self.hintCount += 1
@@ -203,6 +329,21 @@ class LOEGameView(tk.Frame):
             # 연결 종료
            cardConn.close()
 
+    def sendHelpSignalOffice(self):
+        print("sendHelpSignalOffice")
+        
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((mAppDefine.officeServerIP, mAppDefine.officeServerPort))  # 서버의 호스트와 포트에 연결
+
+        # 서버로 데이터 전송
+        data_to_send = {
+            "themeType" : mAppDefine.themeType,
+            "codeType" : mAppDefine.codeType_HELP,
+            "msg" : mAppDefine.codeTypeString_HELP
+        }
+        json_data = json.dumps(data_to_send)
+        client_socket.sendall(json_data.encode('utf-8'))
+        client_socket.close()
 
     def updateFrame(self):
         print("")
