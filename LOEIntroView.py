@@ -16,6 +16,8 @@ from PIL import Image, ImageTk
 
 class LOEIntroView(tk.Frame):
 
+    device_01 = None
+
     def __init__(self,parent):
         tk.Frame.__init__(self,parent)
 
@@ -28,6 +30,8 @@ class LOEIntroView(tk.Frame):
 
         self.deductionTime = 0
 
+        self.parentView = parent
+
         options = ["0", "5", "10","15","20","25","30","35","40","45","50"]
         # 기본 선택 옵션
         selected_option = tk.StringVar(self)
@@ -37,93 +41,52 @@ class LOEIntroView(tk.Frame):
         option_menu = tk.OptionMenu(self, selected_option, *options, command=self.on_select_time)
         option_menu.pack()
 
-        self.topLightStatus = tk.Label(self,text='top wait',font=(mAppDefine.common_font,20))
-        self.topLightStatus.place(x=50, y=400)
-        self.midLightStatus = tk.Label(self,text='mid wait',font=(mAppDefine.common_font,20))
-        self.midLightStatus.place(x=50, y=500)
-        self.botLightStatus = tk.Label(self,text='bot wait',font=(mAppDefine.common_font,20))
-        self.botLightStatus.place(x=50, y=600)
+        self.L01_Status = tk.Label(self,text='L01 wait',font=(mAppDefine.common_font,20))
+        self.L01_Status.place(x=50, y=400)
+        self.L02_Status = tk.Label(self,text='L02 wait',font=(mAppDefine.common_font,20))
+        self.L02_Status.place(x=50, y=500)
+        self.L03_Status = tk.Label(self,text='L03 wait',font=(mAppDefine.common_font,20))
+        self.L03_Status.place(x=50, y=600)
+        self.L04_Status = tk.Label(self,text='L04 wait',font=(mAppDefine.common_font,20))
+        self.L04_Status.place(x=50, y=700)
+        self.L05_Status = tk.Label(self,text='L05 wait',font=(mAppDefine.common_font,20))
+        self.L05_Status.place(x=50, y=800)
+        self.L06_Status = tk.Label(self,text='L06 wait',font=(mAppDefine.common_font,20))
+        self.L06_Status.place(x=50, y=900)
 
-        self.baronStatus = tk.Label(self,text='baron wait',font=(mAppDefine.common_font,20))
-        self.baronStatus.place(x=50, y=700)
-
-        self.magneticStatus = tk.Label(self,text='magnetic wait',font=(mAppDefine.common_font,20))
-        self.magneticStatus.place(x=50, y=800)
-
-        self.topLightButton = tk.Button(self, width = 4, height = 1, text = 'top', font=(mAppDefine.common_font,30), command=self.onClickTopLightButton, bg = 'white')
-        self.topLightButton.place(x=50,y=200)
-        self.midLightButton = tk.Button(self, width = 4, height = 1, text = 'mid', font=(mAppDefine.common_font,30), command=self.onClickMidLightButton, bg = 'white')
-        self.midLightButton.place(x=200,y=200)
-        self.botLightButton = tk.Button(self, width = 4, height = 1, text = 'bot', font=(mAppDefine.common_font,30), command=self.onClickBotLightButton, bg = 'white')
-        self.botLightButton.place(x=350,y=200)
+        self.L01Button = tk.Button(self, width = 4, height = 1, text = 'L01', font=(mAppDefine.common_font,30), command=self.onClickL01Button, bg = 'white')
+        self.L01Button.place(x=50,y=200)
+        self.L02Button = tk.Button(self, width = 4, height = 1, text = 'L02', font=(mAppDefine.common_font,30), command=self.onClickL02Button, bg = 'white')
+        self.L02Button.place(x=200,y=200)
+        self.L03Button = tk.Button(self, width = 4, height = 1, text = 'L03', font=(mAppDefine.common_font,30), command=self.onClickL03Button, bg = 'white')
+        self.L03Button.place(x=350,y=200)
+        self.L04Button = tk.Button(self, width = 4, height = 1, text = 'L04', font=(mAppDefine.common_font,30), command=self.onClickL04Button, bg = 'white')
+        self.L04Button.place(x=500,y=200)
+        self.L05Button = tk.Button(self, width = 4, height = 1, text = 'L05', font=(mAppDefine.common_font,30), command=self.onClickL05Button, bg = 'white')
+        self.L05Button.place(x=650,y=200)
+        self.L06Button = tk.Button(self, width = 4, height = 1, text = 'L06', font=(mAppDefine.common_font,30), command=self.onClickL06Button, bg = 'white')
+        self.L06Button.place(x=800,y=200)
 
         self.device_01 = None
         self.device_02 = None
         self.device_03 = None
+        self.device_04 = None
+        self.device_05 = None
+        self.device_06 = None
 
         self.inputLayerEntry = tk.Entry(self,font=(mAppDefine.common_font,120), width = 5)
         self.inputLayerEntry.place(relx = mAppDefine.layerInputButton_rel_x, rely = mAppDefine.layerInputButton_rel_y)
+        self.inputLayerEntry.bind("<Return>", self.onEnterEntry)
 
-        self.button2 = tk.Button(self, width = 5, height = 1, text="NEXT", font = (mAppDefine.common_font,50), command=lambda: self.onClickNextBtn(parent), fg="white",bg=mAppDefine.nextButtonColor)
-        self.button2.place(relx = mAppDefine.nextButton_rel_x, rely = mAppDefine.nextButton_rel_y)
+        self.setFlag = False
+        self.rdFlag = False
+        self.startFlag = False
 
-        self.readyButton = tk.Button(self, width = 5, height = 1, text="READY", font = (mAppDefine.common_font,40), command=lambda: self.onClickReadyBtn(), fg="white",bg=mAppDefine.nextButtonColor)
-        self.readyButton.place(relx = mAppDefine.nextButton_rel_x, rely = mAppDefine.nextButton_rel_y-0.2)
+        #self.button2 = tk.Button(self, width = 5, height = 1, text="NEXT", font = (mAppDefine.common_font,50), command=lambda: self.onClickNextBtn(parent), fg="white",bg=mAppDefine.nextButtonColor)
+        #self.button2.place(relx = mAppDefine.nextButton_rel_x, rely = mAppDefine.nextButton_rel_y)
 
-    def onClickReadyBtn(self):
-        self.init_light_device()
-        self.init_serial_port()
-
-        self.init_server()
-        self.server_socket.listen(1)
-        print('서버 대기중..')
-        self.server_handler = threading.Thread(target=self.HandleServer,daemon=True)
-        print('h1')
-        self.server_handler.start()
-
-        self.ser_handler = threading.Thread(target=self.StartSerial)
-        self.ser_handler.start()
-
-    def HandleServer(self):
-        print('s0')
-        self.show_debug_text(self.magneticStatus,"MAG_01 wait")
-        while True:
-            print('s0.5')
-            client_socket, addr = self.server_socket.accept()
-            print('s1')
-
-            self.client_handler = threading.Thread(target=self.HandleClient,args=(client_socket,),daemon=True)
-            print('s2 클라이언트 연결 완료 : ', addr)
-            self.client_handler.start() 
-    
-    def HandleClient(self,client_socket):
-        print('s3')
-        while True:
-            data = client_socket.recv(1024).decode('utf-8')
-            #print('data :', data)
-            if not data:
-                break    
-            try:
-                rcv_json = json.loads(data)
-                print('rcv data :', rcv_json)
-                self.ParseJsonData(rcv_json)                
-                response_data = "pyend"
-                print('rcv data 22')
-                #client_socket.sendall(response_data.encode('utf-8'))
-                print('rcv data 33')
-            except json.JSONDecodeError as e:
-                print('json decode error : ', e)
-
-    def ParseJsonData(self,_jsonData):
-        themeType = _jsonData['themeType']
-        codeType = _jsonData['codeType']
-        msg = _jsonData['msg']
-
-        if(themeType != mAppDefine.themeTypeString_LOE):
-            return
-        
-        if(codeType == mAppDefine.codeTypeString_MAGNETIC):
-            self.show_debug_text(self.magneticStatus,msg)  
+        #self.readyButton = tk.Button(self, width = 5, height = 1, text="READY", font = (mAppDefine.common_font,40), command=lambda: self.onClickReadyBtn(), fg="white",bg=mAppDefine.nextButtonColor)
+        #self.readyButton.place(relx = mAppDefine.nextButton_rel_x, rely = mAppDefine.nextButton_rel_y-0.2)
 
     def init_server(self):
         self.host = '192.168.219.200'
@@ -132,58 +95,35 @@ class LOEIntroView(tk.Frame):
         self.server_socket= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind((self.host,self.port))
 
-    def init_remote_port(self):
-        return
-
-
-    def StartSerial(self):
-        while(True):
-            if(self.ser1.in_waiting > 0):
-                arduino_data = self.ser1.readline().decode('utf-8').rstrip()
-                print('baron data : ', arduino_data)
-                self.show_debug_text(self.baronStatus,arduino_data)
-                self.processInput(arduino_data)
-
-    def processInput(self,inputData):
-        print('input data : ' , inputData)
-
-
-    def init_serial_port(self):
-        self.file_path1 = mAppDefine.root_path + mAppDefine.LOEBaronPortFilePath  # 실제 파일 경로에 따라 변경
-        with open(self.file_path1, 'r') as file:
-            content = file.read()
-        print(content)
-
-        self.arduino_port = content
-        # 시리얼 통신 속도 설정 (아두이노의 Serial.begin 값과 일치해야 함)
-        self.baud_rate = 9600
-        # 시리얼 포트 열기
-        self.ser1 = serial.Serial(self.arduino_port, self.baud_rate)
-        time.sleep(2)
-
-        self.show_debug_text(self.baronStatus,'baron sync')        
-
     def show_debug_text(self,target,text):
         now = datetime.now()
         time_str = now.strftime("%H:%M:%S")
         target.config(text=time_str+" "+text)
 
     def init_light_device(self):
-        #ip1 = self.find_device(mAppDefine.light_top_01)
-        print("ip1 : ", mAppDefine.light_top_01)
-        self.device_01 = mLightDevice.Device("TOP_01",mAppDefine.light_top_01)
-        self.show_debug_text(self.topLightStatus,self.device_01.connect())
+        print("ip1 : ", mAppDefine.light_01)
+        self.device_01 = mLightDevice.Device("L_01",mAppDefine.light_01)
+        self.show_debug_text(self.L01_Status,self.device_01.connect())
 
-        #ip2 = self.find_device(mAppDefine.light_mid_01)       
-        print("ip2 : ", mAppDefine.light_mid_01)
-        self.device_02 = mLightDevice.Device("MID_01",mAppDefine.light_mid_01)
-        self.show_debug_text(self.midLightStatus,self.device_02.connect())
-
-        #ip3 = self.find_device(mAppDefine.light_bot_01)       
-        print("ip3 : ", mAppDefine.light_bot_01)
-        self.device_03 = mLightDevice.Device("BOT_01",mAppDefine.light_bot_01)
-        self.show_debug_text(self.botLightStatus,self.device_03.connect())
+        print("ip2 : ", mAppDefine.light_02)
+        self.device_02 = mLightDevice.Device("L_02",mAppDefine.light_02)
+        self.show_debug_text(self.L02_Status,self.device_02.connect())
+  
+        print("ip3 : ", mAppDefine.light_03)
+        self.device_03 = mLightDevice.Device("L_03",mAppDefine.light_03)
+        self.show_debug_text(self.L03_Status,self.device_03.connect())
         
+        print("ip4 : ", mAppDefine.light_04)
+        self.device_04 = mLightDevice.Device("L_04",mAppDefine.light_04)
+        self.show_debug_text(self.L04_Status,self.device_04.connect())
+
+        print("ip5 : ", mAppDefine.light_05)
+        self.device_05 = mLightDevice.Device("L_05",mAppDefine.light_05)
+        self.show_debug_text(self.L05_Status,self.device_05.connect())
+
+        print("ip6 : ", mAppDefine.light_06)
+        self.device_06 = mLightDevice.Device("L_06",mAppDefine.light_06)
+        self.show_debug_text(self.L06_Status,self.device_06.connect())
 
     def find_device(self,mac_address):        
         # MAC 주소 포맷 통일 (소문자, 콜론 기준)
@@ -204,23 +144,41 @@ class LOEIntroView(tk.Frame):
                     return match.group()
         return None
 
-    def onClickTopLightButton(self):
+    def onClickL01Button(self):
         if(self.device_01.lightStatus == True):
             self.device_01.turnOff()
         else:
             self.device_01.turnOn()
     
-    def onClickMidLightButton(self):
+    def onClickL02Button(self):
         if(self.device_02.lightStatus == True):
             self.device_02.turnOff()
         else:
             self.device_02.turnOn()
     
-    def onClickBotLightButton(self):
+    def onClickL03Button(self):
         if(self.device_03.lightStatus == True):
             self.device_03.turnOff()
         else:
             self.device_03.turnOn()
+
+    def onClickL04Button(self):
+        if(self.device_04.lightStatus == True):
+            self.device_04.turnOff()
+        else:
+            self.device_04.turnOn()
+
+    def onClickL05Button(self):
+        if(self.device_05.lightStatus == True):
+            self.device_05.turnOff()
+        else:
+            self.device_05.turnOn()
+
+    def onClickL06Button(self):
+        if(self.device_06.lightStatus == True):
+            self.device_06.turnOff()
+        else:
+            self.device_06.turnOn()
 
     def stopBGM(self):
         self.bgSound.stop()
@@ -229,21 +187,57 @@ class LOEIntroView(tk.Frame):
        self.deductionTime = int(value)
        print(self.deductionTime)
 
-    def onClickNextBtn(self,parent):
+    def onEnterEntry(self,event):
         inputString = self.inputLayerEntry.get().upper()
-        if inputString == 'S': #mAppDefine.startCode:       
-            mAppDefine.timeLimitMin -= self.deductionTime
-            #print("nextBtn")
-            #print(mAppDefine.timeLimitMin)
-            parent.SetStartTime(mAppDefine.timeLimitMin*mAppDefine.MIN_TO_SEC)
-            mAppDefine.timerFlag = True
-            parent.start_timer()
+        if (inputString == '시작'): #mAppDefine.startCode:
+            #if(self.setFlag == True and self.rdFlag == True):
+                mAppDefine.timeLimitMin -= self.deductionTime
+                #print("nextBtn")
+                #print(mAppDefine.timeLimitMin)
+                self.parentView.SetStartTime(mAppDefine.timeLimitMin*mAppDefine.MIN_TO_SEC)
+                mAppDefine.timerFlag = True
+                self.parentView.start_timer()
 
-            connect_handler = threading.Thread(target=self.sendStartSignalOffice,daemon=True)
-            connect_handler.start()
+                connect_handler = threading.Thread(target=self.sendStartSignalOffice,daemon=True)
+                connect_handler.start()
 
-            parent.SetGameView()
-            parent.show_frame(mAppDefine.View.LOEGameView) 
+                self.parentView.SetGameView()
+                self.parentView.show_frame(mAppDefine.View.LOEGameView)
+        elif (inputString == "SET"):
+            self.setFlag = True 
+            #self.init_light_device()
+            #self.device_01.turnOn()
+            #self.device_02.turnOn()
+            #self.device_03.turnOn()
+            #self.device_04.turnOn()
+            #self.device_05.turnOn()
+            #self.device_06.turnOn()
+            self.parentView.SetBGM()
+            self.inputLayerEntry.delete(0,tk.END)
+        elif (inputString == "RD") :
+            self.rdFlag = True
+            self.L01_Status.place_forget()
+            self.L02_Status.place_forget()
+            self.L03_Status.place_forget()
+            self.L04_Status.place_forget()
+            self.L05_Status.place_forget()
+            self.L06_Status.place_forget()
+
+            self.L01Button.place_forget()
+            self.L02Button.place_forget()
+            self.L03Button.place_forget()
+            self.L04Button.place_forget()
+            self.L05Button.place_forget()
+            self.L06Button.place_forget()
+
+            self.device_01.turnOff()
+            self.device_02.turnOff()
+            self.device_03.turnOff()
+            self.device_04.turnOff()
+            self.device_05.turnOff()
+            self.device_06.turnOff()
+
+            self.inputLayerEntry.delete(0,tk.END)
         else:
             print("onClickNextBtn error : ",inputString)
     

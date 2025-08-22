@@ -38,10 +38,21 @@ class LOEView(tk.Tk):
         self.gameView = LOEGameView(self)
         self.frames[mAppDefine.View.LOEGameView] = self.gameView
         self.gameView.place(x=0, y=0, relwidth=1, relheight=1)
-         
+
+        self.SetViewConnection()
+
+    def SetViewConnection(self):
+        self.gameView.SetViewConnection()
+
+    def GetIntroView(self):
+        return self.frames[mAppDefine.View.LOEIntroView]
+        print("GetIntroView")
     
     def SetGameView(self):
         self.gameView.Init_bg()
+
+    def SetBGM(self):
+        self.gameView.Init_BGM()
 
     def SetStartTime(self,_time):
         #print("parnet SetStartTime")

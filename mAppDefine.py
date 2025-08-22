@@ -18,17 +18,20 @@ codeTypeString_SUBEND = "SUBEND"
 codeTypeString_HINT = "HINT"
 codeTypeString_HELP = "HELP"
 codeTypeString_DEFAULT = "DEFAULT"
-codeTypeString_MAGNETIC = "MAG"
+#codeTypeString_MAGNETIC = "MAG"
 
 #device
 email = "araka0279@naver.com"
 password = "znznfna19"
 
-light_top_01= "192.168.219.170" #"98:ba:5f:da:f8:23" # 
-light_mid_01= "192.168.219.171" #"98:03:8e:9c:c4:c8" # 
-light_bot_01= "192.168.219.171" #"98:03:8e:9c:c6:be" # 
+light_01= "192.168.219.170" #"98:ba:5f:da:f8:23" # 
+light_02= "192.168.219.171" #"98:03:8e:9c:c4:c8" # 
+light_03= "192.168.219.172" #"98:03:8e:9c:c6:be" # 
+light_04= "192.168.219.173" #"0c:ef:15:9f:67:f9" # 
+light_05= "192.168.219.174" #"0c:ef:15:9f:70:ca" # 
+light_06= "192.168.219.175" #"0c:ef:15:9f:60:83" # 
 
-remote_magnetic_01 = "192.168.219.153" #"24:d7:eb:ef:ad:63" # 192.168.219.153
+#remote_magnetic_01 = "192.168.219.153" #"24:d7:eb:ef:ad:63" # 192.168.219.153
 
 # DB
 dataPath = "LOE2.db"
@@ -91,7 +94,7 @@ inputButtonColor = "#877129"
 endingPopupText1 = '층 까지 올랐지만 이 위에도 더 층이 있는 것 같습니다.'
 endingPopupText2 = '그렇지만 오늘은 더 오를 수 없습니다. 다음에는.. 꼭..!'
 commonPopupGeometry = f"700x200+800+575"
-resetPopupGeometry = f"1400x800+200+150"
+resetPopupGeometry = f"960x540+200+150"
 endingPopupGeometry = f"1200x600+200+150"
 itemPopupGuiIndex1 = 0
 itemPopupGuiIndex2 = 1
