@@ -103,26 +103,32 @@ class LOEIntroView(tk.Frame):
     def init_light_device(self):
         print("ip1 : ", mAppDefine.light_01)
         self.device_01 = mLightDevice.Device("L_01",mAppDefine.light_01)
+        self.device_01.start_keepalive(45)
         self.show_debug_text(self.L01_Status,self.device_01.connect())
 
         print("ip2 : ", mAppDefine.light_02)
         self.device_02 = mLightDevice.Device("L_02",mAppDefine.light_02)
+        self.device_02.start_keepalive(45)
         self.show_debug_text(self.L02_Status,self.device_02.connect())
   
         print("ip3 : ", mAppDefine.light_03)
         self.device_03 = mLightDevice.Device("L_03",mAppDefine.light_03)
+        self.device_03.start_keepalive(45)
         self.show_debug_text(self.L03_Status,self.device_03.connect())
         
         print("ip4 : ", mAppDefine.light_04)
         self.device_04 = mLightDevice.Device("L_04",mAppDefine.light_04)
+        self.device_04.start_keepalive(45)
         self.show_debug_text(self.L04_Status,self.device_04.connect())
 
         print("ip5 : ", mAppDefine.light_05)
         self.device_05 = mLightDevice.Device("L_05",mAppDefine.light_05)
+        self.device_05.start_keepalive(45)
         self.show_debug_text(self.L05_Status,self.device_05.connect())
 
         print("ip6 : ", mAppDefine.light_06)
         self.device_06 = mLightDevice.Device("L_06",mAppDefine.light_06)
+        self.device_06.start_keepalive(45)
         self.show_debug_text(self.L06_Status,self.device_06.connect())
 
     def find_device(self,mac_address):        
@@ -203,18 +209,18 @@ class LOEIntroView(tk.Frame):
 
                 self.parentView.SetGameView()
                 self.parentView.show_frame(mAppDefine.View.LOEGameView)
-        elif (inputString == "SET"):
+        elif (inputString == "ㅅㅌ"):
             self.setFlag = True 
-            #self.init_light_device()
-            #self.device_01.turnOn()
-            #self.device_02.turnOn()
-            #self.device_03.turnOn()
-            #self.device_04.turnOn()
-            #self.device_05.turnOn()
-            #self.device_06.turnOn()
+            self.init_light_device()
+            self.device_01.turnOn()
+            self.device_02.turnOn()
+            self.device_03.turnOn()
+            self.device_04.turnOn()
+            self.device_05.turnOn()
+            self.device_06.turnOn()
             self.parentView.SetBGM()
             self.inputLayerEntry.delete(0,tk.END)
-        elif (inputString == "RD") :
+        elif (inputString == "ㄹㄷ") :
             self.rdFlag = True
             self.L01_Status.place_forget()
             self.L02_Status.place_forget()

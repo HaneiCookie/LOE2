@@ -16,7 +16,7 @@ class LOEView(tk.Tk):
         tk.Tk.__init__(self)
 
         self.geometry("1920x1080")
-        self.attributes("-fullscreen",False)
+        self.attributes("-fullscreen",True)
         self.bind("<Escape>", self.quitFullScreen)
       
         self.Init_GUI()

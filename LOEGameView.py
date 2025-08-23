@@ -119,7 +119,7 @@ class LOEGameView(tk.Frame):
 
         #skip test
         if(inputText == "T"):
-            self.currentQuizIndex = 33
+            self.currentQuizIndex = 24
             self.show_next_quiz()   
 
         if(inputText == "직원호출"):
@@ -137,7 +137,7 @@ class LOEGameView(tk.Frame):
         self.entry.delete(0,tk.END)
 
     def show_hint_content(self):
-        if(self.currentQuizIndex >= 41):
+        if(self.currentQuizIndex >= 42):
             return
         
         self.hintCount += 1
@@ -183,7 +183,11 @@ class LOEGameView(tk.Frame):
             if(hasattr(self,"move_job")):
                self.after_cancel(self.move_job)
                self.move_job = None
-            self.show_moving_quiz()        
+            self.show_moving_quiz()
+        elif(self.currentQuizIndex == 31):
+            if(hasattr(self,"move_job")):
+               self.after_cancel(self.move_job)
+               self.move_job = None      
         elif(self.currentQuizIndex == 34):
             self.show_left_quiz(self.currentQuizIndex-34)
             self.show_right_quiz(self.currentQuizIndex-34)
@@ -216,22 +220,23 @@ class LOEGameView(tk.Frame):
             return
 
     def light_control(self):
-        if(self.currentQuizIndex == 26):
-            self.introView.device_01.turnOn()
+        if(self.currentQuizIndex == 25):
+            self.run_io_async(self.introView.device_01.turnOn)
+        elif(self.currentQuizIndex == 26):
+            self.run_io_async(self.introView.device_02.turnOn)
         elif(self.currentQuizIndex == 27):
-            self.introView.device_02.turnOn()
+            self.run_io_async(self.introView.device_03.turnOn)
         elif(self.currentQuizIndex == 28):
-            self.introView.device_03.turnOn()
+            self.run_io_async(self.introView.device_04.turnOn)
         elif(self.currentQuizIndex == 29):
-            self.introView.device_04.turnOn()
+            self.run_io_async(self.introView.device_05.turnOn)
         elif(self.currentQuizIndex == 30):
-            self.introView.device_05.turnOn()
+            self.run_io_async(self.introView.device_06.turnOn)
         elif(self.currentQuizIndex == 31):
-            self.introView.device_06.turnOn()
-        elif(self.currentQuizIndex == 32):
             self.light_off_all()
-            self.after(mAppDefine.ONE_SEC*3,self.start_special_light())
-        elif(self.currentQuizIndex == 33):
+            self.light_handler = threading.Thread(target=self.start_special_light,daemon=True)
+            self.light_handler.start()
+        elif(self.currentQuizIndex == 32):
             self.light_off_all()
             self.after_cancel(self.light_job)
             self.light_job = None
@@ -246,24 +251,40 @@ class LOEGameView(tk.Frame):
         else:
             return
         
+    def run_io_async(self, fn, *args, **kwargs):
+        # 1) 반드시 콜러블인지 확인
+        if not callable(fn):
+            raise TypeError(f"run_io_async: callable이 필요합니다. 받음: {type(fn).__name__}")
+
+        # 2) target=fn 으로 정확히 지정 (★ target=self 절대 금지)
+        t = threading.Thread(target=fn, args=args, kwargs=kwargs, daemon=True)
+        t.start()
+        return t
+        
     def light_off_all(self):
-        self.introView.device_01.turnOff()
-        self.introView.device_02.turnOff()
-        self.introView.device_03.turnOff()
-        self.introView.device_04.turnOff()
-        self.introView.device_05.turnOff()
-        self.introView.device_06.turnOff()
+        self.run_io_async(self.introView.device_01.turnOff)
+        self.run_io_async(self.introView.device_02.turnOff)
+        self.run_io_async(self.introView.device_03.turnOff)
+        self.run_io_async(self.introView.device_04.turnOff)
+        self.run_io_async(self.introView.device_05.turnOff)
+        self.run_io_async(self.introView.device_06.turnOff)
+        #self.introView.device_01.turnOff()
+        #self.introView.device_02.turnOff()
+        #self.introView.device_03.turnOff()
+        #self.introView.device_04.turnOff()
+        #self.introView.device_05.turnOff()
+        #self.introView.device_06.turnOff()
         
     def start_special_light(self):
-        self.after(mAppDefine.ONE_SEC*3,self.introView.device_01.turnOn())
-        self.after(mAppDefine.ONE_SEC*6,self.introView.device_02.turnOn())
-        self.after(mAppDefine.ONE_SEC*9,self.introView.device_03.turnOn())
-        self.after(mAppDefine.ONE_SEC*12,self.introView.device_04.turnOn())
-        self.after(mAppDefine.ONE_SEC*15,self.introView.device_05.turnOn())
-        self.after(mAppDefine.ONE_SEC*18,self.introView.device_06.turnOn())
-        self.after(mAppDefine.ONE_SEC*21,self.light_off_all())
+        self.after(mAppDefine.ONE_MIL_SEC*3,self.introView.device_04.turnOn)
+        self.after(mAppDefine.ONE_MIL_SEC*6,self.introView.device_03.turnOn)
+        self.after(mAppDefine.ONE_MIL_SEC*9,self.introView.device_02.turnOn)
+        self.after(mAppDefine.ONE_MIL_SEC*12,self.introView.device_05.turnOn)
+        self.after(mAppDefine.ONE_MIL_SEC*15,self.introView.device_06.turnOn)
+        self.after(mAppDefine.ONE_MIL_SEC*18,self.introView.device_01.turnOn)
+        self.after(mAppDefine.ONE_MIL_SEC*21,self.light_off_all)
 
-        self.light_job = self.after(mAppDefine.ONE_SEC*22,self.start_special_light())
+        self.light_job = self.after(mAppDefine.ONE_MIL_SEC*24,self.start_special_light)
     
     def move_image(self):
         self.movingImage_x -= 2
@@ -273,7 +294,7 @@ class LOEGameView(tk.Frame):
             self.move_time_count += 1
             print(self.movingImage_x)
             print(self.move_time_count)
-            if(self.move_time_count >= mAppDefine.ONE_SEC*5):
+            if(self.move_time_count >= mAppDefine.ONE_SEC*50):
                 self.move_time_count = 0
                 self.movingImage_x = 0
 
@@ -324,13 +345,13 @@ class LOEGameView(tk.Frame):
         self.bgm_06 = pygame.mixer.Sound(mAppDefine.root_path + "LOE_BGM_06.mp3")
         self.bgm_07 = pygame.mixer.Sound(mAppDefine.root_path + "LOE_BGM_07.mp3")
 
-        self.bgm_01.set_volume(0.5)
-        self.bgm_02.set_volume(0.5)
-        self.bgm_03.set_volume(0.5)
-        self.bgm_04.set_volume(0.5)
-        self.bgm_05.set_volume(0.5)
-        self.bgm_06.set_volume(0.5)
-        self.bgm_07.set_volume(0.5)
+        self.bgm_01.set_volume(0.1)
+        self.bgm_02.set_volume(0.4)
+        self.bgm_03.set_volume(0.4) # top
+        self.bgm_04.set_volume(0.4) # mid
+        self.bgm_05.set_volume(0.5) # video 
+        self.bgm_06.set_volume(0.3) # bot
+        self.bgm_07.set_volume(0.2)
 
         
         self.bgm_01.play(-1)
