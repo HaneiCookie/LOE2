@@ -90,6 +90,16 @@ class LOEGameView(tk.Frame):
         print(self.currentQuizIndex)
         print(inputText)
 
+        if(self.currentQuizIndex == 52):
+            mAppDefine.timerFlag = False
+            if(inputText == self.quizAnswerArray[int(self.currentQuizIndex)].upper()):
+                self.currentQuizIndex = 63
+            else:
+                self.currentQuizIndex = 62
+            self.show_next_quiz()
+            self.entry.place_forget()
+            return
+
         if(self.currentQuizIndex >= 34 and self.currentQuizIndex < 37):
             if(inputText == "자야"):
                 self.show_left_quiz(1)
@@ -119,7 +129,7 @@ class LOEGameView(tk.Frame):
 
         #skip test
         if(inputText == "T"):
-            self.currentQuizIndex = 24
+            self.currentQuizIndex = 51
             self.show_next_quiz()   
 
         if(inputText == "직원호출"):
@@ -244,7 +254,7 @@ class LOEGameView(tk.Frame):
             #Hue, Saturation 
             self.introView.device_02.setColor(0,100) # red
             self.introView.device_01.setColor(16,100) # orange
-            self.introView.device_04.setColor(60,100) # yellow
+            self.introView.device_04.setColor(60,40) # yellow
             self.introView.device_05.setColor(120,100) # green
             self.introView.device_06.setColor(240,100) # blue
             self.introView.device_03.setColor(300,100) # purple
@@ -268,12 +278,6 @@ class LOEGameView(tk.Frame):
         self.run_io_async(self.introView.device_04.turnOff)
         self.run_io_async(self.introView.device_05.turnOff)
         self.run_io_async(self.introView.device_06.turnOff)
-        #self.introView.device_01.turnOff()
-        #self.introView.device_02.turnOff()
-        #self.introView.device_03.turnOff()
-        #self.introView.device_04.turnOff()
-        #self.introView.device_05.turnOff()
-        #self.introView.device_06.turnOff()
         
     def start_special_light(self):
         self.after(mAppDefine.ONE_MIL_SEC*3,self.introView.device_04.turnOn)
@@ -379,13 +383,17 @@ class LOEGameView(tk.Frame):
         for k in range(0,8):
             self.doubleLeftImageArray.append("LOE_Quiz_BOT.0" + f"{2*(k+1)-1:02}" + ".png")
             self.doubleRightImageArray.append("LOE_Quiz_BOT.0" + f"{2*(k+1):02}" + ".png")           
-        
-    def stop_game(self):
-        self.start_ending()
 
     def start_ending(self):
-        if(self.endFlag == True):
-            return
+        self.entry.place_forget()
+        endingIndex = self.get_ending_rank()
+        self.show_next_quiz()
+        
+    def get_ending_rank(self):
+        if(self.currentQuizIndex >= 43):
+            self.currentQuizIndex += 10
+        else:
+            self.currentQuizIndex = 53
 
     def open_help_popup(self):
         popup = tk.Toplevel(self)

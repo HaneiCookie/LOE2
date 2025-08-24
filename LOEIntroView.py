@@ -196,7 +196,7 @@ class LOEIntroView(tk.Frame):
     def onEnterEntry(self,event):
         inputString = self.inputLayerEntry.get().upper()
         if (inputString == '시작'): #mAppDefine.startCode:
-            #if(self.setFlag == True and self.rdFlag == True):
+            if(self.setFlag == True and self.rdFlag == True):
                 mAppDefine.timeLimitMin -= self.deductionTime
                 #print("nextBtn")
                 #print(mAppDefine.timeLimitMin)

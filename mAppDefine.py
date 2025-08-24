@@ -117,7 +117,7 @@ exitCode = 'EXIT'
 
 timerFlag = False
 
-timeLimitMin = 99 # min
+timeLimitMin = 1 # min
 MIN_TO_SEC = 60 # sec
 ONE_MIL_SEC = 1000 # msec
 HALF_MIL_SEC = 200 # msec
