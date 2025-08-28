@@ -218,6 +218,14 @@ class LOEIntroView(tk.Frame):
             self.device_04.turnOn()
             self.device_05.turnOn()
             self.device_06.turnOn()
+
+            self.device_01.setColor(20,8) # red
+            self.device_02.setColor(0,100) # 
+            self.device_03.setColor(0,100) # 
+            self.device_04.setColor(0,100) # 
+            self.device_05.setColor(0,100) # 
+            self.device_06.setColor(0,100) # 
+
             self.parentView.SetBGM()
             self.inputLayerEntry.delete(0,tk.END)
         elif (inputString == "ㄹㄷ") :
@@ -236,7 +244,7 @@ class LOEIntroView(tk.Frame):
             self.L05Button.place_forget()
             self.L06Button.place_forget()
 
-            self.device_01.turnOff()
+            #self.device_01.turnOff()
             self.device_02.turnOff()
             self.device_03.turnOff()
             self.device_04.turnOff()

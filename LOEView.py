@@ -50,6 +50,7 @@ class LOEView(tk.Tk):
     
     def SetGameView(self):
         self.gameView.Init_bg()
+        self.gameView.SetEntryFocus()
 
     def SetBGM(self):
         self.gameView.Init_BGM()

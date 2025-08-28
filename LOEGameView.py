@@ -231,6 +231,7 @@ class LOEGameView(tk.Frame):
 
     def light_control(self):
         if(self.currentQuizIndex == 25):
+            self.introView.device_01.setColor(0,100) # red
             self.run_io_async(self.introView.device_01.turnOn)
         elif(self.currentQuizIndex == 26):
             self.run_io_async(self.introView.device_02.turnOn)
@@ -250,16 +251,28 @@ class LOEGameView(tk.Frame):
             self.light_off_all()
             self.after_cancel(self.light_job)
             self.light_job = None
-        elif(self.currentQuizIndex == 40):
-            #Hue, Saturation 
-            self.introView.device_02.setColor(0,100) # red
-            self.introView.device_01.setColor(16,100) # orange
-            self.introView.device_04.setColor(60,40) # yellow
-            self.introView.device_05.setColor(120,100) # green
-            self.introView.device_06.setColor(240,100) # blue
-            self.introView.device_03.setColor(300,100) # purple
+
+            self.after(mAppDefine.ONE_MIL_SEC*27,self.set_rainbow_light)
         else:
             return
+        
+    def set_rainbow_light(self):
+        self.run_io_async(self.introView.device_01.turnOn)
+        self.run_io_async(self.introView.device_02.turnOn)
+        self.run_io_async(self.introView.device_03.turnOn)
+        self.run_io_async(self.introView.device_04.turnOn)
+        self.run_io_async(self.introView.device_05.turnOn)
+        self.run_io_async(self.introView.device_06.turnOn)
+        
+        #Hue, Saturation 
+        self.introView.device_02.setColor(0,100) # red
+        self.introView.device_01.setColor(20,100) # orange
+        self.introView.device_04.setColor(60,40) # yellow
+        self.introView.device_05.setColor(120,100) # green
+        self.introView.device_06.setColor(240,100) # blue
+        self.introView.device_03.setColor(300,100) # purple
+
+
         
     def run_io_async(self, fn, *args, **kwargs):
         # 1) 반드시 콜러블인지 확인
@@ -298,11 +311,11 @@ class LOEGameView(tk.Frame):
             self.move_time_count += 1
             print(self.movingImage_x)
             print(self.move_time_count)
-            if(self.move_time_count >= mAppDefine.ONE_SEC*50):
+            if(self.move_time_count >= 500):
                 self.move_time_count = 0
                 self.movingImage_x = 0
 
-        self.move_job = self.after(mAppDefine.MIL_SEC_10,lambda:self.move_image()) 
+        self.move_job = self.after(mAppDefine.ONE_SEC*5,lambda:self.move_image()) 
 
     def show_moving_quiz(self):
         newImagePath = mAppDefine.root_path + self.movingImageArray[self.currentQuizIndex-25]
@@ -350,9 +363,9 @@ class LOEGameView(tk.Frame):
         self.bgm_07 = pygame.mixer.Sound(mAppDefine.root_path + "LOE_BGM_07.mp3")
 
         self.bgm_01.set_volume(0.1)
-        self.bgm_02.set_volume(0.4)
-        self.bgm_03.set_volume(0.4) # top
-        self.bgm_04.set_volume(0.4) # mid
+        self.bgm_02.set_volume(0.2)
+        self.bgm_03.set_volume(0.2) # top
+        self.bgm_04.set_volume(0.2) # mid
         self.bgm_05.set_volume(0.5) # video 
         self.bgm_06.set_volume(0.3) # bot
         self.bgm_07.set_volume(0.2)
@@ -367,6 +380,9 @@ class LOEGameView(tk.Frame):
         self.canvas.delete(self.prevImage)
         self.canvas.create_rectangle(0, 0, 100, 100, fill='red')
         self.prevImage = self.canvas.create_image(0, 0, anchor=tk.NW, image=self.newPhoto)
+
+    def SetEntryFocus(self):
+        self.entry.focus_set()
 
     def Init_QUIZ(self):
         self.Sqlite_Quiz()
