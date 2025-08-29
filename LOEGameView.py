@@ -128,13 +128,13 @@ class LOEGameView(tk.Frame):
             self.right_split_end_check = False
 
         #skip test
-        if(inputText == "T"):
-            self.currentQuizIndex = 51
-            self.show_next_quiz()   
+        #if(inputText == "T"):
+            #self.currentQuizIndex = 51
+            #self.show_next_quiz()   
 
         if(inputText == "직원호출"):
             self.sendHelpSignalOffice()
-        elif(inputText == "H" or inputText == "ㅎ"):
+        elif(inputText == "힌트"):
             self.show_hint_content()
         elif(self.check_answer(inputText) == True):    
             self.currentQuizIndex += 1        
@@ -363,10 +363,10 @@ class LOEGameView(tk.Frame):
         self.bgm_07 = pygame.mixer.Sound(mAppDefine.root_path + "LOE_BGM_07.mp3")
 
         self.bgm_01.set_volume(0.1)
-        self.bgm_02.set_volume(0.2)
-        self.bgm_03.set_volume(0.2) # top
-        self.bgm_04.set_volume(0.2) # mid
-        self.bgm_05.set_volume(0.5) # video 
+        self.bgm_02.set_volume(0.1)
+        self.bgm_03.set_volume(0.1) # top
+        self.bgm_04.set_volume(0.3) # mid
+        self.bgm_05.set_volume(0.4) # video 
         self.bgm_06.set_volume(0.3) # bot
         self.bgm_07.set_volume(0.2)
 
@@ -404,6 +404,7 @@ class LOEGameView(tk.Frame):
         self.entry.place_forget()
         endingIndex = self.get_ending_rank()
         self.show_next_quiz()
+        self.sendEndSignalOffice()
         
     def get_ending_rank(self):
         if(self.currentQuizIndex >= 43):
