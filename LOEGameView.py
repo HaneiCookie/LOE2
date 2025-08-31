@@ -85,7 +85,8 @@ class LOEGameView(tk.Frame):
         self.introView = self.upperView.GetIntroView()
 
     def onEnterCardInput(self,event):
-        inputText = self.entry.get().upper()
+        inputText_e = self.entry.get().upper()
+        inputText = inputText_e.replace(" ","")
 
         print(self.currentQuizIndex)
         print(inputText)
@@ -98,6 +99,8 @@ class LOEGameView(tk.Frame):
                 self.currentQuizIndex = 62
             self.show_next_quiz()
             self.entry.place_forget()
+            self.sendEndSignalOffice()
+            self.light_off_all()
             return
 
         if(self.currentQuizIndex >= 34 and self.currentQuizIndex < 37):
@@ -402,11 +405,12 @@ class LOEGameView(tk.Frame):
 
     def start_ending(self):
         self.entry.place_forget()
-        endingIndex = self.get_ending_rank()
+        self.set_ending_rank()
         self.show_next_quiz()
         self.sendEndSignalOffice()
+        self.light_off_all()
         
-    def get_ending_rank(self):
+    def set_ending_rank(self):
         if(self.currentQuizIndex >= 43):
             self.currentQuizIndex += 10
         else:
