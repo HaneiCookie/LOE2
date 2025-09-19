@@ -139,6 +139,7 @@ class LOEGameView(tk.Frame):
             self.sendHelpSignalOffice()
         elif(inputText == "힌트"):
             self.show_hint_content()
+            self.sendHintSignalOffice()
         elif(self.check_answer(inputText) == True):    
             self.currentQuizIndex += 1        
             self.show_next_quiz()
@@ -467,6 +468,22 @@ class LOEGameView(tk.Frame):
         }
         json_data = json.dumps(data_to_send)
         client_socket.sendall(json_data.encode('utf-8'))
+        client_socket.close()
+
+    def sendHintSignalOffice(self): 
+        print("sendHintSignalOffice")        
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((mAppDefine.officeServerIP, mAppDefine.officeServerPort))  # 서버의 호스트와 포트에 연결
+
+        hintStr = str(self.hintCount)
+        # 서버로 데이터 전송
+        data_to_send = {
+            "themeType" : mAppDefine.themeType,
+            "codeType" : mAppDefine.codeTypeString_HINT,
+            "msg" : hintStr
+        }
+        json_data = json.dumps(data_to_send)
+        client_socket.sendall(json_data.encode('utf-8'))
         client_socket.close()  
 
     def Sqlite_Quiz(self):
@@ -505,23 +522,7 @@ class LOEGameView(tk.Frame):
 
         finally:
             # 연결 종료
-           cardConn.close()
-
-    def sendHelpSignalOffice(self):
-        print("sendHelpSignalOffice")
-        
-        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect((mAppDefine.officeServerIP, mAppDefine.officeServerPort))  # 서버의 호스트와 포트에 연결
-
-        # 서버로 데이터 전송
-        data_to_send = {
-            "themeType" : mAppDefine.themeType,
-            "codeType" : mAppDefine.codeType_HELP,
-            "msg" : mAppDefine.codeTypeString_HELP
-        }
-        json_data = json.dumps(data_to_send)
-        client_socket.sendall(json_data.encode('utf-8'))
-        client_socket.close()
+           cardConn.close() 
 
     def updateFrame(self):
         print("")
