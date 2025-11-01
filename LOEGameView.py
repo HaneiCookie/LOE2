@@ -138,8 +138,7 @@ class LOEGameView(tk.Frame):
         if(inputText == "직원호출"):
             self.sendHelpSignalOffice()
         elif(inputText == "힌트"):
-            self.show_hint_content()
-            self.sendHintSignalOffice()
+            self.show_hint_content()            
         elif(self.check_answer(inputText) == True):    
             self.currentQuizIndex += 1        
             self.show_next_quiz()
@@ -153,6 +152,8 @@ class LOEGameView(tk.Frame):
     def show_hint_content(self):
         if(self.currentQuizIndex >= 42):
             return
+        
+        self.sendHintSignalOffice()
         
         self.hintCount += 1
         self.hintCountButton.config(text=str(self.hintCount))
